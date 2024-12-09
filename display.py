@@ -34,7 +34,7 @@ class Display:
             logger.error(f"Failed to initialize display: {str(e)}")
             raise
 
-    def create_price_image(self, symbol: str, price: float, graph_data=None):
+    def create_price_image(self, symbol: str, stats, graph_data=None):
         """Create image with price and optional graph"""
         image = Image.new('1', (self.width, self.height), 255)  # 255: white
         draw = ImageDraw.Draw(image)
@@ -42,14 +42,25 @@ class Display:
         # Draw symbol
         draw.text((5, 5), symbol, font=self.symbol_font, fill=0)
 
-        # Draw price
-        price_text = f"${price:.2f}" if price < 1000 else f"${price:,.0f}"
+        # Draw current price
+        price_text = f"${stats.current_price:.2f}" if stats.current_price < 1000 else f"${stats.current_price:,.0f}"
         draw.text((5, 30), price_text, font=self.price_font, fill=0)
+
+        # Draw stats on the top right
+        stats_x = self.width - 80  # Position stats 80 pixels from right edge
+        
+        # Draw high price
+        high_text = f"H: ${stats.day_high:.2f}"
+        draw.text((stats_x, 5), high_text, font=self.symbol_font, fill=0)
+        
+        # Draw low price
+        low_text = f"L: ${stats.day_low:.2f}"
+        draw.text((stats_x, 20), low_text, font=self.symbol_font, fill=0)
 
         # Draw graph if data is provided
         if graph_data is not None:
             graph_image = self.create_graph(graph_data)
-            # Paste graph below price (adjust coordinates as needed)
+            # Paste graph below price
             image.paste(graph_image, (0, 60))
 
         return image

@@ -2,7 +2,8 @@ import asyncio
 import logging
 import uvicorn
 from api import app
-from mock_display import MockDisplay  # Import mock display for local testing
+from display import Display
+from mock_display import MockDisplay
 from data_fetcher import DataFetcher
 import config
 import signal
@@ -15,7 +16,13 @@ logger = logging.getLogger(__name__)
 
 class StockDisplay:
     def __init__(self):
-        self.display = MockDisplay()  # Use mock display
+        try:
+            self.display = Display()
+            logger.info("Using e-Paper display")
+        except Exception as e:
+            logger.warning(f"Failed to initialize e-Paper display: {e}")
+            logger.info("Falling back to mock display. Check output directory for images.")
+            self.display = MockDisplay()
         self.data_fetcher = DataFetcher()
         self.running = True
         self.last_graph_update = datetime.min
