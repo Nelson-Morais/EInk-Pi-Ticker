@@ -52,8 +52,15 @@ pip install python-dotenv==1.0.0
 pip install schedule==1.2.1
 pip install requests==2.31.0
 pip install pillow==10.1.0
-# E-Paper display library
-pip install git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd\&subdirectory=RaspberryPi/python
+
+# Install Waveshare e-Paper library
+echo "Installing Waveshare e-Paper library..."
+cd /tmp
+rm -rf e-Paper
+git clone https://github.com/waveshareteam/e-Paper.git
+cd e-Paper/RaspberryPi_JetsonNano/python/
+python setup.py install
+cd "${INSTALL_DIR}"
 
 # Create necessary directories
 echo "Creating necessary directories..."
@@ -92,7 +99,7 @@ WorkingDirectory=${INSTALL_DIR}
 Environment="PATH=${INSTALL_DIR}/venv/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
 Environment="DISPLAY_TYPE=RaspberryPi"
 Environment="GPIOZERO_PIN_FACTORY=rpigpio"
-Environment="PYTHONPATH=${INSTALL_DIR}"
+Environment="PYTHONPATH=${INSTALL_DIR}:/tmp/e-Paper/RaspberryPi_JetsonNano/python"
 Environment="PYTHONUNBUFFERED=1"
 ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
