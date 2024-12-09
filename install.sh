@@ -38,20 +38,9 @@ echo "Upgrading pip and installing wheel..."
 pip install --upgrade pip
 pip install wheel
 
-# Install Python packages in virtual environment
-echo "Installing Python packages..."
-# Web server packages
-pip install fastapi==0.104.1
-pip install "uvicorn[standard]==0.24.0"
-# Data handling packages
-pip install pandas==2.1.3
-pip install yfinance==0.2.31
-pip install matplotlib==3.8.2
-# Utility packages
-pip install python-dotenv==1.0.0
-pip install schedule==1.2.1
-pip install requests==2.31.0
-pip install pillow==10.1.0
+# Install Python packages from requirements.txt
+echo "Installing Python packages from requirements.txt..."
+pip install -r "${INSTALL_DIR}/requirements.txt"
 
 # Install Waveshare e-Paper library
 echo "Installing Waveshare e-Paper library..."
