@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Update system
-echo "Updating system..."
-sudo apt-get update
-sudo apt-get upgrade -y
-
 # Install system dependencies
 echo "Installing system dependencies..."
 sudo apt-get install -y python3-pip

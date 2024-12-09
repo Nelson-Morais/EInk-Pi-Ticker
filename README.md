@@ -31,20 +31,25 @@ pip install -r requirements.txt
 
 For the quickest setup, follow these steps:
 
-1. Clone this repository:
+1. Update your Raspberry Pi (recommended):
+   ```bash
+   sudo apt-get update
+   sudo apt-get upgrade -y
+   ```
+
+2. Clone this repository:
    ```bash
    git clone https://github.com/yourusername/pi_stock_display.git
    cd pi_stock_display
    ```
 
-2. Run the installation script:
+3. Run the installation script:
    ```bash
    chmod +x install.sh
    ./install.sh
    ```
 
 The installation script will:
-- Update your system
 - Install all required system dependencies
 - Set up a Python virtual environment
 - Install all Python packages
