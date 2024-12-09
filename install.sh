@@ -20,6 +20,7 @@ sudo apt-get install -y python3-dev
 sudo apt-get install -y python3-numpy
 sudo apt-get install -y python3-rpi.gpio
 sudo apt-get install -y python3-spidev
+sudo apt-get install -y python3-gpiozero
 
 # Create virtual environment
 echo "Creating Python virtual environment..."
@@ -67,6 +68,7 @@ User=$USER
 WorkingDirectory=${INSTALL_DIR}
 Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:${INSTALL_DIR}/venv/bin"
 Environment="DISPLAY_TYPE=RaspberryPi"
+Environment="GPIOZERO_PIN_FACTORY=rpigpio"
 ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
