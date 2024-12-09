@@ -1,6 +1,8 @@
 # Raspberry Pi Stock/Crypto Display
 
-A Raspberry Pi Zero 2 W project that displays real-time stock or cryptocurrency prices on a 2.13-inch e-ink display.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A Raspberry Pi Zero project that displays real-time stock or cryptocurrency prices on a 2.13-inch e-ink display.
 
 ## Features
 
@@ -12,8 +14,8 @@ A Raspberry Pi Zero 2 W project that displays real-time stock or cryptocurrency 
 
 ## Hardware Requirements
 
-- Raspberry Pi Zero 2 W
-- 2.13-inch E-ink Display
+- Raspberry Pi Zero (Zero 2 W)
+- 2.13-inch E-ink Display from [Waveshare](https://www.waveshare.com/catalogsearch/result/?q=2.13)
 - MicroSD card
 - Power supply
 
@@ -73,15 +75,6 @@ After installation, the display service will start automatically and run on boot
 
 For additional help, please open an issue on GitHub.
 
-## Setup Instructions
-
-1. Clone this repository to your Raspberry Pi
-2. Install the required dependencies
-3. Configure your display settings in `config.py`
-4. Run the main application:
-   ```bash
-   python main.py
-   ```
 
 ## API Usage
 
