@@ -28,13 +28,21 @@ sudo apt-get install -y ttf-dejavu
 sudo apt-get install -y python3-pydantic
 sudo apt-get install -y python3-typing-extensions
 
-# Upgrade pip
+# Upgrade pip and install wheel
+echo "Upgrading pip and installing wheel..."
 sudo pip3 install --upgrade pip
+sudo pip3 install wheel
+
+# Clean any previous installations
+echo "Cleaning previous installations..."
+sudo pip3 uninstall -y fastapi uvicorn
 
 # Install Python packages system-wide
 echo "Installing Python packages..."
-# Web server packages
-sudo pip3 install "fastapi[all]"  # This includes uvicorn
+# Web server packages - install separately to ensure proper installation
+sudo pip3 install fastapi==0.104.1
+sudo pip3 install uvicorn==0.24.0
+sudo pip3 install uvicorn[standard]
 # Data handling packages
 sudo pip3 install pandas==2.1.3
 sudo pip3 install yfinance==0.2.31
@@ -44,6 +52,9 @@ sudo pip3 install python-dotenv==1.0.0
 sudo pip3 install schedule==1.2.1
 sudo pip3 install requests==2.31.0
 sudo pip3 install pillow==10.1.0
+sudo pip3 install click==8.1.7  # Required by uvicorn
+sudo pip3 install h11==0.14.0   # Required by uvicorn
+sudo pip3 install websockets==12.0  # Required by uvicorn
 # E-Paper display library
 sudo pip3 install git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd\&subdirectory=RaspberryPi/python
 
@@ -70,6 +81,14 @@ sudo make check
 sudo make install
 cd "${INSTALL_DIR}"
 
+# Verify uvicorn installation
+echo "Verifying uvicorn installation..."
+if ! python3 -c "import uvicorn" 2>/dev/null; then
+    echo "Uvicorn not found, attempting alternative installation..."
+    sudo pip3 install --no-cache-dir uvicorn
+    sudo pip3 install --no-cache-dir "uvicorn[standard]"
+fi
+
 # Set up systemd service for auto-start
 echo "Setting up auto-start service..."
 sudo tee /etc/systemd/system/stock-display.service << EOF
@@ -85,6 +104,7 @@ Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
 Environment="DISPLAY_TYPE=RaspberryPi"
 Environment="GPIOZERO_PIN_FACTORY=rpigpio"
 Environment="PYTHONPATH=${INSTALL_DIR}"
+Environment="PYTHONUNBUFFERED=1"
 ExecStart=/usr/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
