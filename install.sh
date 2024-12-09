@@ -19,14 +19,16 @@ sudo apt-get install -y git
 sudo apt-get install -y build-essential
 sudo apt-get install -y python3-dev
 sudo apt-get install -y python3-numpy
-sudo apt-get install -y python3-rpi.gpio
-sudo apt-get install -y python3-spidev
-sudo apt-get install -y python3-gpiozero
 sudo apt-get install -y python3-pillow
 sudo apt-get install -y python3-pandas
 sudo apt-get install -y python3-matplotlib
 sudo apt-get install -y fonts-dejavu
 sudo apt-get install -y ttf-dejavu
+
+# Install GPIO-related packages via apt-get
+sudo apt-get install -y python3-rpi.gpio
+sudo apt-get install -y python3-spidev
+sudo apt-get install -y python3-gpiozero
 
 # Create and activate virtual environment
 echo "Creating Python virtual environment..."

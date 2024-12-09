@@ -6,9 +6,8 @@ matplotlib==3.8.2
 pillow==10.1.0
 yfinance==0.2.31
 python-dotenv==1.0.0
-# Remove RPi.GPIO as it's conflicting with Jetson.GPIO
-rpi.gpio @ git+https://github.com/RPi-Distro/RPi.GPIO.git
-spidev==3.6
+# GPIO packages should be installed via apt-get instead
+# RPi.GPIO and spidev are handled by apt-get in install.sh
 schedule==1.2.1
 numpy==1.26.2
 gpiozero==2.0
