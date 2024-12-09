@@ -18,6 +18,11 @@ sudo apt-get install -y libtiff5
 sudo apt-get install -y git
 sudo apt-get install -y build-essential
 sudo apt-get install -y python3-dev
+
+# Install GPIO and other system packages
+sudo apt-get install -y python3-rpi.gpio
+sudo apt-get install -y python3-spidev
+sudo apt-get install -y python3-gpiozero
 sudo apt-get install -y python3-numpy
 sudo apt-get install -y python3-pillow
 sudo apt-get install -y python3-pandas
@@ -25,14 +30,9 @@ sudo apt-get install -y python3-matplotlib
 sudo apt-get install -y fonts-dejavu
 sudo apt-get install -y ttf-dejavu
 
-# Install GPIO-related packages via apt-get
-sudo apt-get install -y python3-rpi.gpio
-sudo apt-get install -y python3-spidev
-sudo apt-get install -y python3-gpiozero
-
-# Create and activate virtual environment
+# Create virtual environment with system packages
 echo "Creating Python virtual environment..."
-python3 -m venv "${INSTALL_DIR}/venv"
+python3 -m venv "${INSTALL_DIR}/venv" --system-site-packages
 source "${INSTALL_DIR}/venv/bin/activate"
 
 # Upgrade pip and install wheel in virtual environment

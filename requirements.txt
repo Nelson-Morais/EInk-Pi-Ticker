@@ -6,10 +6,8 @@ matplotlib==3.8.2
 pillow==10.1.0
 yfinance==0.2.31
 python-dotenv==1.0.0
-# GPIO packages should be installed via apt-get instead
-# RPi.GPIO and spidev are handled by apt-get in install.sh
 schedule==1.2.1
 numpy==1.26.2
-gpiozero==2.0
+# GPIO packages are installed via apt-get and included via --system-site-packages
 # Use Waveshare's official RaspberryPi implementation
 git+https://github.com/waveshareteam/e-Paper.git#subdirectory=RaspberryPi_JetsonNano/python
