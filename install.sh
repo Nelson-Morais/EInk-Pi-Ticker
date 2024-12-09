@@ -2,13 +2,21 @@
 
 # Install system dependencies
 echo "Installing system dependencies..."
+# Update package list first
+sudo apt-get update
+
+# Install essential packages
+sudo apt-get install -y coreutils
 sudo apt-get install -y python3-pip
 sudo apt-get install -y python3-venv
 sudo apt-get install -y libopenjp2-7
 sudo apt-get install -y libtiff5
 sudo apt-get install -y git
-sudo apt-get install -y coreutils  # For cat, grep, and other basic utilities
-sudo apt-get install -y build-essential python3-dev
+sudo apt-get install -y build-essential
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python3-numpy
+sudo apt-get install -y python3-rpi.gpio
+sudo apt-get install -y python3-spidev
 
 # Create virtual environment
 echo "Creating Python virtual environment..."
@@ -54,7 +62,8 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=$(pwd)
-Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$(pwd)/venv/bin"
+Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:$(pwd)/venv/bin"
+Environment="DISPLAY_TYPE=RaspberryPi"
 ExecStart=$(pwd)/venv/bin/python3 main.py
 Restart=always
 RestartSec=5

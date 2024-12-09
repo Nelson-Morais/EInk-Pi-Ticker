@@ -10,5 +10,5 @@ RPi.GPIO==0.7.1
 spidev==3.6
 schedule==1.2.1
 numpy==1.26.2
-# Waveshare e-Paper library from official repository
-git+https://github.com/waveshare/e-Paper.git@master#subdirectory=RaspberryPi_JetsonNano/python
+# Use Waveshare's official RaspberryPi implementation
+git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd&subdirectory=RaspberryPi/python
