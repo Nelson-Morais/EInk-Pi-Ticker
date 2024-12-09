@@ -103,6 +103,22 @@ Edit `config.py` to modify:
 - API settings
 - Default symbol
 
+## Updating the Application
+
+For small code changes:
+```bash
+# Pull latest changes
+git pull origin main
+
+# Restart the service
+sudo systemctl restart stock-display.service
+```
+
+Only run the full installation script again if:
+- You've added new dependencies to requirements.txt
+- You're setting up on a new Raspberry Pi
+- You've made changes to the systemd service configuration
+
 ## Contributing
 
 Feel free to submit issues and pull requests.
