@@ -22,16 +22,29 @@ sudo apt-get install -y python3-spidev
 sudo apt-get install -y python3-gpiozero
 sudo apt-get install -y python3-pillow
 sudo apt-get install -y python3-pandas
+sudo apt-get install -y python3-matplotlib
+sudo apt-get install -y fonts-dejavu
+sudo apt-get install -y ttf-dejavu
+sudo apt-get install -y python3-pydantic
+sudo apt-get install -y python3-typing-extensions
+
+# Upgrade pip
+sudo pip3 install --upgrade pip
 
 # Install Python packages system-wide
 echo "Installing Python packages..."
-sudo pip3 install fastapi==0.104.1
-sudo pip3 install uvicorn==0.24.0
-sudo pip3 install requests==2.31.0
-sudo pip3 install matplotlib==3.8.2
+# Web server packages
+sudo pip3 install "fastapi[all]"  # This includes uvicorn
+# Data handling packages
+sudo pip3 install pandas==2.1.3
 sudo pip3 install yfinance==0.2.31
+sudo pip3 install matplotlib==3.8.2
+# Utility packages
 sudo pip3 install python-dotenv==1.0.0
 sudo pip3 install schedule==1.2.1
+sudo pip3 install requests==2.31.0
+sudo pip3 install pillow==10.1.0
+# E-Paper display library
 sudo pip3 install git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd\&subdirectory=RaspberryPi/python
 
 # Create necessary directories
@@ -71,6 +84,7 @@ WorkingDirectory=${INSTALL_DIR}
 Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
 Environment="DISPLAY_TYPE=RaspberryPi"
 Environment="GPIOZERO_PIN_FACTORY=rpigpio"
+Environment="PYTHONPATH=${INSTALL_DIR}"
 ExecStart=/usr/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
