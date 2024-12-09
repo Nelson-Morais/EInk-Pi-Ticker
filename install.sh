@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Get the absolute path of the current directory
+INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Install system dependencies
 echo "Installing system dependencies..."
 # Update package list first
@@ -20,17 +23,17 @@ sudo apt-get install -y python3-spidev
 
 # Create virtual environment
 echo "Creating Python virtual environment..."
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv "${INSTALL_DIR}/venv"
+source "${INSTALL_DIR}/venv/bin/activate"
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r "${INSTALL_DIR}/requirements.txt"
 
 # Create necessary directories
 echo "Creating necessary directories..."
-mkdir -p output
+mkdir -p "${INSTALL_DIR}/output"
 
 # Enable SPI if not already enabled
 echo "Enabling SPI interface..."
@@ -49,7 +52,7 @@ cd bcm2835-1.71/
 make
 sudo make check
 sudo make install
-cd -
+cd "${INSTALL_DIR}"
 
 # Set up systemd service for auto-start
 echo "Setting up auto-start service..."
@@ -61,10 +64,10 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-WorkingDirectory=$(pwd)
-Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:$(pwd)/venv/bin"
+WorkingDirectory=${INSTALL_DIR}
+Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:${INSTALL_DIR}/venv/bin"
 Environment="DISPLAY_TYPE=RaspberryPi"
-ExecStart=$(pwd)/venv/bin/python3 main.py
+ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
 
