@@ -11,7 +11,6 @@ sudo apt-get update
 # Install essential packages
 sudo apt-get install -y coreutils
 sudo apt-get install -y python3-pip
-sudo apt-get install -y python3-venv
 sudo apt-get install -y libopenjp2-7
 sudo apt-get install -y libtiff5
 sudo apt-get install -y git
@@ -21,16 +20,19 @@ sudo apt-get install -y python3-numpy
 sudo apt-get install -y python3-rpi.gpio
 sudo apt-get install -y python3-spidev
 sudo apt-get install -y python3-gpiozero
+sudo apt-get install -y python3-pillow
+sudo apt-get install -y python3-pandas
 
-# Create virtual environment
-echo "Creating Python virtual environment..."
-python3 -m venv "${INSTALL_DIR}/venv"
-source "${INSTALL_DIR}/venv/bin/activate"
-
-# Install Python dependencies
-echo "Installing Python dependencies..."
-pip install --upgrade pip
-pip install -r "${INSTALL_DIR}/requirements.txt"
+# Install Python packages system-wide
+echo "Installing Python packages..."
+sudo pip3 install fastapi==0.104.1
+sudo pip3 install uvicorn==0.24.0
+sudo pip3 install requests==2.31.0
+sudo pip3 install matplotlib==3.8.2
+sudo pip3 install yfinance==0.2.31
+sudo pip3 install python-dotenv==1.0.0
+sudo pip3 install schedule==1.2.1
+sudo pip3 install git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd\&subdirectory=RaspberryPi/python
 
 # Create necessary directories
 echo "Creating necessary directories..."
@@ -66,10 +68,10 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=${INSTALL_DIR}
-Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:${INSTALL_DIR}/venv/bin"
+Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
 Environment="DISPLAY_TYPE=RaspberryPi"
 Environment="GPIOZERO_PIN_FACTORY=rpigpio"
-ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
+ExecStart=/usr/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
 
