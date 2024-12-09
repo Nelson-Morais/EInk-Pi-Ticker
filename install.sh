@@ -11,6 +11,8 @@ sudo apt-get update
 # Install essential packages
 sudo apt-get install -y coreutils
 sudo apt-get install -y python3-pip
+sudo apt-get install -y python3-venv
+sudo apt-get install -y python3-full
 sudo apt-get install -y libopenjp2-7
 sudo apt-get install -y libtiff5
 sudo apt-get install -y git
@@ -25,38 +27,33 @@ sudo apt-get install -y python3-pandas
 sudo apt-get install -y python3-matplotlib
 sudo apt-get install -y fonts-dejavu
 sudo apt-get install -y ttf-dejavu
-sudo apt-get install -y python3-pydantic
-sudo apt-get install -y python3-typing-extensions
 
-# Upgrade pip and install wheel
+# Create and activate virtual environment
+echo "Creating Python virtual environment..."
+python3 -m venv "${INSTALL_DIR}/venv"
+source "${INSTALL_DIR}/venv/bin/activate"
+
+# Upgrade pip and install wheel in virtual environment
 echo "Upgrading pip and installing wheel..."
-sudo pip3 install --upgrade pip
-sudo pip3 install wheel
+pip install --upgrade pip
+pip install wheel
 
-# Clean any previous installations
-echo "Cleaning previous installations..."
-sudo pip3 uninstall -y fastapi uvicorn
-
-# Install Python packages system-wide
+# Install Python packages in virtual environment
 echo "Installing Python packages..."
-# Web server packages - install separately to ensure proper installation
-sudo pip3 install fastapi==0.104.1
-sudo pip3 install uvicorn==0.24.0
-sudo pip3 install uvicorn[standard]
+# Web server packages
+pip install fastapi==0.104.1
+pip install "uvicorn[standard]==0.24.0"
 # Data handling packages
-sudo pip3 install pandas==2.1.3
-sudo pip3 install yfinance==0.2.31
-sudo pip3 install matplotlib==3.8.2
+pip install pandas==2.1.3
+pip install yfinance==0.2.31
+pip install matplotlib==3.8.2
 # Utility packages
-sudo pip3 install python-dotenv==1.0.0
-sudo pip3 install schedule==1.2.1
-sudo pip3 install requests==2.31.0
-sudo pip3 install pillow==10.1.0
-sudo pip3 install click==8.1.7  # Required by uvicorn
-sudo pip3 install h11==0.14.0   # Required by uvicorn
-sudo pip3 install websockets==12.0  # Required by uvicorn
+pip install python-dotenv==1.0.0
+pip install schedule==1.2.1
+pip install requests==2.31.0
+pip install pillow==10.1.0
 # E-Paper display library
-sudo pip3 install git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd\&subdirectory=RaspberryPi/python
+pip install git+https://github.com/waveshare/e-Paper.git@master#egg=waveshare-epd\&subdirectory=RaspberryPi/python
 
 # Create necessary directories
 echo "Creating necessary directories..."
@@ -81,14 +78,6 @@ sudo make check
 sudo make install
 cd "${INSTALL_DIR}"
 
-# Verify uvicorn installation
-echo "Verifying uvicorn installation..."
-if ! python3 -c "import uvicorn" 2>/dev/null; then
-    echo "Uvicorn not found, attempting alternative installation..."
-    sudo pip3 install --no-cache-dir uvicorn
-    sudo pip3 install --no-cache-dir "uvicorn[standard]"
-fi
-
 # Set up systemd service for auto-start
 echo "Setting up auto-start service..."
 sudo tee /etc/systemd/system/stock-display.service << EOF
@@ -100,12 +89,12 @@ After=network.target
 Type=simple
 User=$USER
 WorkingDirectory=${INSTALL_DIR}
-Environment="PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
+Environment="PATH=${INSTALL_DIR}/venv/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
 Environment="DISPLAY_TYPE=RaspberryPi"
 Environment="GPIOZERO_PIN_FACTORY=rpigpio"
 Environment="PYTHONPATH=${INSTALL_DIR}"
 Environment="PYTHONUNBUFFERED=1"
-ExecStart=/usr/bin/python3 ${INSTALL_DIR}/main.py
+ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
 
