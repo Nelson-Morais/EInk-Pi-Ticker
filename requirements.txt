@@ -10,5 +10,6 @@ schedule==1.2.1
 numpy==1.26.2
 gpiozero==1.6.2
 spidev==3.6
+pydantic==2.5.2
 # Use Waveshare's official RaspberryPi implementation
 git+https://github.com/waveshareteam/e-Paper.git#subdirectory=RaspberryPi_JetsonNano/python
