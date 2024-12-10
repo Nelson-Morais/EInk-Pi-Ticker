@@ -1,4 +1,4 @@
-# Raspberry Pi Stock/Crypto Display
+# Raspberry Pi Ticker Display
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -39,8 +39,8 @@ For the quickest setup, follow these steps:
 
 2. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/pi_stock_display.git
-   cd pi_stock_display
+   git clone https://github.com/yourusername/pi_ticker_display.git
+   cd pi_ticker_display
    ```
 
 3. Run the installation script:
@@ -60,11 +60,11 @@ After installation, the display service will start automatically and run on boot
 
 ### Manual Control
 
-- Check service status: `sudo systemctl status stock-display.service`
-- View logs: `sudo journalctl -u stock-display.service -f`
-- Stop service: `sudo systemctl stop stock-display.service`
-- Start service: `sudo systemctl start stock-display.service`
-- Disable auto-start: `sudo systemctl disable stock-display.service`
+- Check service status: `sudo systemctl status ticker-display.service`
+- View logs: `sudo journalctl -u ticker-display.service -f`
+- Stop service: `sudo systemctl stop ticker-display.service`
+- Start service: `sudo systemctl start ticker-display.service`
+- Disable auto-start: `sudo systemctl disable ticker-display.service`
 
 ### Troubleshooting
 
@@ -111,7 +111,7 @@ For small code changes:
 git pull origin main
 
 # Restart the service
-sudo systemctl restart stock-display.service
+sudo systemctl restart ticker-display.service
 ```
 
 Only run the full installation script again if:

@@ -75,9 +75,9 @@ sudo usermod -a -G gpio,spi $USER
 
 # Set up systemd service for auto-start
 echo "Setting up auto-start service..."
-sudo tee /etc/systemd/system/stock-display.service << EOF
+sudo tee /etc/systemd/system/ticker-display.service << EOF
 [Unit]
-Description=Stock Display Service
+Description=Ticker Display Service
 After=network.target
 
 [Service]
@@ -100,11 +100,11 @@ EOF
 
 # Enable and start the service
 sudo systemctl daemon-reload
-sudo systemctl enable stock-display.service
-sudo systemctl start stock-display.service
+sudo systemctl enable ticker-display.service
+sudo systemctl start ticker-display.service
 
-echo "Installation complete! The stock display service is now running."
-echo "To check the status, run: sudo systemctl status stock-display.service"
-echo "To view logs, run: sudo journalctl -u stock-display.service -f"
+echo "Installation complete! The Ticker display service is now running."
+echo "To check the status, run: sudo systemctl status ticker-display.service"
+echo "To view logs, run: sudo journalctl -u ticker-display.service -f"
 echo ""
 echo "Note: If this is the first time enabling SPI, please reboot your Raspberry Pi."
