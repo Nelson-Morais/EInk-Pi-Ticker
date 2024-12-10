@@ -8,6 +8,9 @@ yfinance==0.2.31
 python-dotenv==1.0.0
 schedule==1.2.1
 numpy==1.26.2
-# GPIO packages are installed via apt-get and included via --system-site-packages
+RPi.GPIO==0.7.1
+gpiozero==2.0
+spidev==3.6
+
 # Use Waveshare's official RaspberryPi implementation
 git+https://github.com/waveshareteam/e-Paper.git#subdirectory=RaspberryPi_JetsonNano/python

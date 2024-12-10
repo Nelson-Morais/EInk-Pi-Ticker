@@ -19,20 +19,13 @@ sudo apt-get install -y git
 sudo apt-get install -y build-essential
 sudo apt-get install -y python3-dev
 
-# Install GPIO and other system packages
-sudo apt-get install -y python3-rpi.gpio
-sudo apt-get install -y python3-spidev
-sudo apt-get install -y python3-gpiozero
-sudo apt-get install -y python3-numpy
-sudo apt-get install -y python3-pillow
-sudo apt-get install -y python3-pandas
-sudo apt-get install -y python3-matplotlib
+# Install font packages
 sudo apt-get install -y fonts-dejavu
 sudo apt-get install -y ttf-dejavu
 
-# Create virtual environment with system packages
+# Create virtual environment
 echo "Creating Python virtual environment..."
-python3 -m venv "${INSTALL_DIR}/venv" --system-site-packages
+python3 -m venv "${INSTALL_DIR}/venv"
 source "${INSTALL_DIR}/venv/bin/activate"
 
 # Upgrade pip and install wheel in virtual environment
@@ -76,6 +69,10 @@ sudo make check
 sudo make install
 cd "${INSTALL_DIR}"
 
+# Add current user to gpio and spi groups
+echo "Adding user to gpio and spi groups..."
+sudo usermod -a -G gpio,spi $USER
+
 # Set up systemd service for auto-start
 echo "Setting up auto-start service..."
 sudo tee /etc/systemd/system/stock-display.service << EOF
@@ -85,7 +82,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=$USER
+User=root
+Group=root
 WorkingDirectory=${INSTALL_DIR}
 Environment="PATH=${INSTALL_DIR}/venv/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin"
 Environment="DISPLAY_TYPE=RaspberryPi"
