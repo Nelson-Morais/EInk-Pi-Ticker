@@ -9,15 +9,17 @@ echo "Installing system dependencies..."
 sudo apt-get update
 
 # Install essential packages
-sudo apt-get install -y coreutils
-sudo apt-get install -y python3-pip
-sudo apt-get install -y python3-venv
-sudo apt-get install -y python3-full
-sudo apt-get install -y libopenjp2-7
-sudo apt-get install -y libtiff5
-sudo apt-get install -y git
+sudo apt-get install -y \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    python3-gpiod \
+    libgpiod2 \
+    libopenjp2-7 \
+    libtiff5 \
+    git
 sudo apt-get install -y build-essential
-sudo apt-get install -y python3-dev
+sudo apt-get install -y coreutils
 
 # Install font packages
 sudo apt-get install -y fonts-dejavu
