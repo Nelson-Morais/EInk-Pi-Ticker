@@ -34,9 +34,7 @@ sudo apt-get update
 sudo apt-get install -y \
     python3-pip \
     python3-venv \
-    python3-rpi.gpio \
     python3-spidev \
-    python3-gpiozero \
     build-essential
 
 # Add user to spi and gpio groups if not already a member
@@ -51,14 +49,17 @@ fi
 
 # 4. Setup Python environment
 echo "Setting up Python environment..."
-python3 -m venv "${INSTALL_DIR}/venv" --system-site-packages
+python3 -m venv "${INSTALL_DIR}/venv"
 source "${INSTALL_DIR}/venv/bin/activate"
 
-# Create configuration file for gpiozero to use RPi.GPIO
-echo "Setting up GPIO configuration..."
-mkdir -p ~/.config/gpiozero
-echo "GPIOZERO_PIN_FACTORY=rpigpio" > ~/.config/gpiozero/defaults
+# Remove any existing GPIO packages to avoid conflicts
+pip uninstall -y RPi.GPIO Jetson.GPIO gpiozero || true
 
+# Install GPIO packages in the correct order
+pip install RPi.GPIO==0.7.1
+pip install gpiozero==1.6.2
+
+# Install other requirements
 pip install --upgrade pip
 pip install -r "${INSTALL_DIR}/requirements.txt"
 
@@ -76,7 +77,7 @@ After=network.target
 Type=simple
 User=pi
 WorkingDirectory=${INSTALL_DIR}
-Environment=PYTHONPATH=${INSTALL_DIR}/venv/lib/python3.11/site-packages:/usr/lib/python3/dist-packages
+Environment=PYTHONPATH=${INSTALL_DIR}/venv/lib/python3.11/site-packages
 Environment=GPIOZERO_PIN_FACTORY=rpigpio
 ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
