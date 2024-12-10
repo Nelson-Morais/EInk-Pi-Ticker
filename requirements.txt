@@ -8,8 +8,8 @@ yfinance==0.2.31
 python-dotenv==1.0.0
 schedule==1.2.1
 numpy==1.26.2
-rpi.gpio2==0.3.0a4
-gpiozero==2.0
+RPi.GPIO==0.7.0
+gpiozero==1.6.2
 spidev==3.6
 # Use Waveshare's official RaspberryPi implementation
 git+https://github.com/waveshareteam/e-Paper.git#subdirectory=RaspberryPi_JetsonNano/python
