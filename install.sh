@@ -13,10 +13,11 @@ sudo apt-get install -y \
     python3-pip \
     python3-venv \
     python3-dev \
-    python3-gpiod \
-    libgpiod2 \
+    gpiod \
+    libgpiod-dev \
     libopenjp2-7 \
     libtiff5 \
+    libatlas-base-dev \
     git
 sudo apt-get install -y build-essential
 sudo apt-get install -y coreutils
