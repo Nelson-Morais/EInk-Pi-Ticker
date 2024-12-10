@@ -13,6 +13,7 @@ sudo apt-get install -y \
     python3-pip \
     python3-venv \
     python3-dev \
+    python3-rpi.gpio \
     gpiod \
     libgpiod-dev \
     libopenjp2-7 \
