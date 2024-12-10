@@ -28,25 +28,37 @@ sudo make check
 sudo make install
 cd "${INSTALL_DIR}"
 
-# 3. Install basic Python requirements (as per Waveshare docs)
-echo "Installing Python and SPI dependencies..."
+# 3. Install system dependencies
+echo "Installing system dependencies..."
 sudo apt-get update
 sudo apt-get install -y \
     python3-pip \
     python3-venv \
+    python3-rpi.gpio \
+    python3-spidev \
+    python3-gpiozero \
     build-essential
 
-# Add user to spi group if not already a member
+# Add user to spi and gpio groups if not already a member
 if ! groups | grep -q "\bspi\b"; then
     echo "Adding user to spi group..."
     sudo usermod -a -G spi $USER
-    echo "You may need to log out and back in for group changes to take effect"
+fi
+if ! groups | grep -q "\bgpio\b"; then
+    echo "Adding user to gpio group..."
+    sudo usermod -a -G gpio $USER
 fi
 
 # 4. Setup Python environment
 echo "Setting up Python environment..."
 python3 -m venv "${INSTALL_DIR}/venv" --system-site-packages
 source "${INSTALL_DIR}/venv/bin/activate"
+
+# Create configuration file for gpiozero to use RPi.GPIO
+echo "Setting up GPIO configuration..."
+mkdir -p ~/.config/gpiozero
+echo "GPIOZERO_PIN_FACTORY=rpigpio" > ~/.config/gpiozero/defaults
+
 pip install --upgrade pip
 pip install -r "${INSTALL_DIR}/requirements.txt"
 
@@ -65,6 +77,7 @@ Type=simple
 User=pi
 WorkingDirectory=${INSTALL_DIR}
 Environment=PYTHONPATH=${INSTALL_DIR}/venv/lib/python3.11/site-packages:/usr/lib/python3/dist-packages
+Environment=GPIOZERO_PIN_FACTORY=rpigpio
 ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/main.py
 Restart=always
 RestartSec=5
@@ -82,4 +95,4 @@ echo "To check the status, run: sudo systemctl status ticker-display.service"
 echo "To view logs, run: sudo journalctl -u ticker-display.service -f"
 echo ""
 echo "Note: If this is the first time enabling SPI, please reboot your Raspberry Pi."
-echo "Note: If you were added to the spi group, you'll need to log out and back in for it to take effect."
+echo "Note: If you were added to the gpio or spi groups, you'll need to log out and back in for it to take effect."
