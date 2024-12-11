@@ -29,9 +29,10 @@ class EPaperDisplay:
         self.epd = epd2in13_V2.EPD()
         self.init_display()
         
-        # The display dimensions (note: rotated 90° in our setup)
-        self.width = self.epd.height  
-        self.height = self.epd.width
+        # The display dimensions (using natural orientation like example)
+        self.width = self.epd.height  # Match example code orientation
+        self.height = self.epd.width  # Match example code orientation
+        logger.info(f"Display dimensions: {self.width}x{self.height}")
         
         # Create initial image buffer
         self.image = Image.new('1', (self.width, self.height), 255)
@@ -113,7 +114,10 @@ class EPaperDisplay:
     def display(self):
         """Update the physical display with current image buffer"""
         try:
-            self.epd.display(self.epd.getbuffer(self.image))
+            buffer = self.epd.getbuffer(self.image)
+            logger.info(f"Display buffer size: {len(buffer)} bytes")
+            self.epd.display(buffer)
+            time.sleep(2)  # Add delay after display
             logger.info("Display updated successfully")
         except Exception as e:
             logger.error(f"Failed to update display: {str(e)}")
@@ -122,7 +126,10 @@ class EPaperDisplay:
     def partial_update(self):
         """Perform a partial update of the display"""
         try:
-            self.epd.displayPartial(self.epd.getbuffer(self.image))
+            buffer = self.epd.getbuffer(self.image)
+            logger.info(f"Partial update buffer size: {len(buffer)} bytes")
+            self.epd.displayPartial(buffer)
+            time.sleep(0.5)  # Add shorter delay for partial updates
             logger.info("Partial display update completed")
         except Exception as e:
             logger.error(f"Failed to perform partial update: {str(e)}")
