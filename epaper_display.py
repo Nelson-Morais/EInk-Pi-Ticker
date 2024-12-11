@@ -33,7 +33,7 @@ class EPaperDisplay:
         self.height = self.epd.width  # Match example code orientation
         logger.info(f"Display dimensions: {self.width}x{self.height}")
         
-        # Create initial image buffer
+        # Create initial image buffer (255 for white background)
         self.image = Image.new('1', (self.width, self.height), 255)
         self.draw = ImageDraw.Draw(self.image)
         
@@ -59,10 +59,10 @@ class EPaperDisplay:
             
             # Draw a test pattern
             logger.info("Drawing test pattern...")
-            self.draw.rectangle([(0,0),(50,50)], outline=0)
-            self.draw.rectangle([(55,0),(100,50)], fill=0)
-            self.draw.line([(0,0),(50,50)], fill=0, width=1)
-            self.draw.text((10, 60), 'Test Pattern', font=self.symbol_font, fill=0)
+            self.draw.rectangle([(0,0),(50,50)], outline=0)  # 0 for black
+            self.draw.rectangle([(55,0),(100,50)], fill=0)   # 0 for black
+            self.draw.line([(0,0),(50,50)], fill=0, width=1) # 0 for black
+            self.draw.text((10, 60), 'Test Pattern', font=self.symbol_font, fill=0) # 0 for black
             
             logger.info("Getting buffer for test pattern...")
             buffer = self.epd.getbuffer(self.image)
@@ -83,7 +83,7 @@ class EPaperDisplay:
     def clear_display(self):
         """Clear the display to white"""
         try:
-            self.epd.Clear(0xFF)  # 0xFF = white
+            self.epd.Clear(0xFF)  # 0xFF for white
             logger.info("Display cleared")
         except Exception as e:
             logger.error(f"Failed to clear display: {str(e)}")
