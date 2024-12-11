@@ -1,5 +1,6 @@
 import pigpio
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +31,8 @@ class RaspberryPi:
         self.pi.set_mode(self.CS_PIN, pigpio.OUTPUT)
         self.pi.set_mode(self.BUSY_PIN, pigpio.INPUT)
 
-        # Initialize SPI
-        self.SPI = self.pi.spi_open(0, 4000000)  # Removed unused argument
-
-        # Removed duplicate SPI initialization code
+        # Initialize SPI with 4MHz baud rate
+        self.SPI = self.pi.spi_open(0, 0, baud=4000000)
 
     def digital_write(self, pin, value):
         self.pi.write(pin, value)
@@ -42,7 +41,7 @@ class RaspberryPi:
         return self.pi.read(pin)
 
     def delay_ms(self, delaytime):
-        self.pi.time_sleep(delaytime / 1000.0)
+        time.sleep(delaytime / 1000.0)
 
     def spi_writebyte(self, data):
         if isinstance(data, list):
@@ -58,7 +57,7 @@ class RaspberryPi:
         self.pi.spi_close(self.SPI)
         self.pi.stop()
 
-# Create the implementation instance
+# Create a global instance
 implementation = RaspberryPi()
 
 # Expose module-level functions that the Waveshare library expects
