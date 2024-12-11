@@ -52,6 +52,15 @@ class EPaperDisplay:
         try:
             self.epd.init(self.epd.FULL_UPDATE)
             self.clear_display()  # Start with a clean display
+            
+            # Draw a test pattern
+            self.draw.rectangle([(0,0),(50,50)], outline=0)
+            self.draw.rectangle([(55,0),(100,50)], fill=0)
+            self.draw.line([(0,0),(50,50)], fill=0, width=1)
+            self.draw.text((10, 60), 'Test Pattern', font=self.symbol_font, fill=0)
+            self.epd.display(self.epd.getbuffer(self.image))
+            time.sleep(2)
+            
             logger.info("E-Paper display initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize display: {str(e)}")
