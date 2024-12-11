@@ -31,7 +31,9 @@ class RaspberryPi:
         self.pi.set_mode(self.BUSY_PIN, pigpio.INPUT)
 
         # Initialize SPI
-        self.SPI = self.pi.spi_open(0, 0, baud=4000000, flags=0)
+        self.SPI = self.pi.spi_open(0, 4000000)  # Removed unused argument
+
+        # Removed duplicate SPI initialization code
 
     def digital_write(self, pin, value):
         self.pi.write(pin, value)
