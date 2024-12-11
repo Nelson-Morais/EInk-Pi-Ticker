@@ -1,24 +1,28 @@
 import logging
+import time
 from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 import io
-import os
-from datetime import datetime
+from waveshare_epd import epd2in13_V2
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class MockDisplay:
+class EPaperDisplay:
     """
-    A mock display class that saves images to disk instead of displaying on e-Paper.
-    Follows the same interface as EPaperDisplay for compatibility.
+    A class to handle the e-Paper display operations using the Waveshare library.
+    This implementation follows the Waveshare example code structure more closely.
     """
     def __init__(self):
-        # Set up dimensions to match e-Paper display
-        self.width = 250  # Display width
-        self.height = 122  # Display height
+        # Initialize the display
+        self.epd = epd2in13_V2.EPD()
+        self.init_display()
         
-        # Create image buffer
+        # The display dimensions (note: rotated 90° in our setup)
+        self.width = self.epd.height  
+        self.height = self.epd.width
+        
+        # Create initial image buffer
         self.image = Image.new('1', (self.width, self.height), 255)
         self.draw = ImageDraw.Draw(self.image)
         
@@ -30,18 +34,25 @@ class MockDisplay:
             logger.warning("Custom fonts not found, using default font")
             self.price_font = ImageFont.load_default()
             self.symbol_font = ImageFont.load_default()
-        
-        # Ensure output directory exists
-        os.makedirs("output", exist_ok=True)
 
     def init_display(self):
-        """Mock initialization"""
-        logger.info("Mock display initialized")
+        """Initialize the e-Paper display with proper error handling"""
+        try:
+            self.epd.init(self.epd.FULL_UPDATE)
+            self.clear_display()  # Start with a clean display
+            logger.info("E-Paper display initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize display: {str(e)}")
+            raise
 
     def clear_display(self):
-        """Clear the display image"""
-        self.draw.rectangle((0, 0, self.width, self.height), fill=255)
-        logger.info("Mock display cleared")
+        """Clear the display to white"""
+        try:
+            self.epd.Clear(0xFF)  # 0xFF = white
+            logger.info("Display cleared")
+        except Exception as e:
+            logger.error(f"Failed to clear display: {str(e)}")
+            raise
 
     def create_stock_layout(self, symbol: str, stats, graph_data=None):
         """Create the stock display layout"""
@@ -89,20 +100,37 @@ class MockDisplay:
         return graph
 
     def display(self):
-        """Save the current image to disk"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"output/display_{timestamp}.png"
-        self.image.save(filename)
-        logger.info(f"Saved display image to {filename}")
+        """Update the physical display with current image buffer"""
+        try:
+            self.epd.display(self.epd.getbuffer(self.image))
+            logger.info("Display updated successfully")
+        except Exception as e:
+            logger.error(f"Failed to update display: {str(e)}")
+            raise
 
     def partial_update(self):
-        """Mock partial update - same as full update for mock display"""
-        self.display()
+        """Perform a partial update of the display"""
+        try:
+            self.epd.displayPartial(self.epd.getbuffer(self.image))
+            logger.info("Partial display update completed")
+        except Exception as e:
+            logger.error(f"Failed to perform partial update: {str(e)}")
+            raise
 
     def sleep(self):
-        """Mock sleep mode"""
-        logger.info("Mock display sleep mode")
+        """Put the display into sleep mode"""
+        try:
+            self.epd.sleep()
+            logger.info("Display entered sleep mode")
+        except Exception as e:
+            logger.error(f"Failed to put display to sleep: {str(e)}")
+            raise
 
     def wake(self):
-        """Mock wake from sleep"""
-        logger.info("Mock display wake from sleep")
+        """Wake the display from sleep mode"""
+        try:
+            self.epd.init(self.epd.FULL_UPDATE)
+            logger.info("Display woken from sleep")
+        except Exception as e:
+            logger.error(f"Failed to wake display: {str(e)}")
+            raise

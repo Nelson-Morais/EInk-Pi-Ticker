@@ -2,7 +2,7 @@ import asyncio
 import logging
 import uvicorn
 from api import app
-from display import Display
+from epaper_display import EPaperDisplay
 from mock_display import MockDisplay
 from data_fetcher import DataFetcher
 import config
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class StockDisplay:
     def __init__(self):
         try:
-            self.display = Display()
+            self.display = EPaperDisplay()  # Use the new EPaperDisplay class
             logger.info("Using e-Paper display")
         except Exception as e:
             logger.warning(f"Failed to initialize e-Paper display: {e}")
@@ -36,7 +36,7 @@ class StockDisplay:
         """Handle shutdown signals"""
         logger.info("Shutdown signal received")
         self.running = False
-        self.display.clear()
+        self.display.clear_display()  # Use new method name
         self.display.sleep()
         sys.exit(0)
 
@@ -55,9 +55,9 @@ class StockDisplay:
                 self.last_graph_update = now
                 logger.info(f"Updated graph data for {current_symbol}")
             
-            # Create and update image
-            image = self.display.create_price_image(current_symbol, stats, self.current_graph_data)
-            self.display.update(image)
+            # Create layout and update display
+            self.display.create_stock_layout(current_symbol, stats, self.current_graph_data)
+            self.display.display()  # Use new display update method
             
             logger.info(f"Updated display with {current_symbol} price: {stats.current_price}")
         except Exception as e:
