@@ -4,13 +4,11 @@ import time
 
 logger = logging.getLogger(__name__)
 
-# Define pins at module level - using Waveshare's exact pin configuration
+# Define pins at module level
 RST_PIN = 17
 DC_PIN = 25
 CS_PIN = 8
 BUSY_PIN = 24
-SPI_BUS = 0
-SPI_DEVICE = 0
 
 class RaspberryPi:
     def __init__(self):
@@ -32,9 +30,9 @@ class RaspberryPi:
         self.pi.set_mode(self.CS_PIN, pigpio.OUTPUT)
         self.pi.set_mode(self.BUSY_PIN, pigpio.INPUT)
 
-        # Initialize SPI
+        # Initialize SPI with 4MHz baud rate
         logger.info("Setting up SPI...")
-        self.SPI = self.pi.spi_open(SPI_BUS, SPI_DEVICE, baud=4000000)
+        self.SPI = self.pi.spi_open(0, 4000000, 0)  # channel 0 (CE0), 4MHz baud rate, default flags
         logger.info("Setup complete!")
 
     def digital_write(self, pin, value):
