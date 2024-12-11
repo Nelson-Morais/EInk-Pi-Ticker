@@ -3,6 +3,14 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 import io
+import sys
+import os
+
+# Add the current directory to Python path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Import our custom config before importing the Waveshare library
+import epdconfig_override
 from waveshare_epd import epd2in13_V2
 
 logging.basicConfig(level=logging.INFO)
