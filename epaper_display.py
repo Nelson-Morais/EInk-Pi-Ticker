@@ -10,8 +10,9 @@ import os
 import epdconfig_override
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "venv/lib/python3.11/site-packages/waveshare_epd"))
-sys.modules['waveshare_epd.epdconfig'] = epdconfig_override
+
+# Override the waveshare_epd.epdconfig module with our implementation
+sys.modules['waveshare_epd.epdconfig'] = sys.modules['epdconfig_override']
 
 from waveshare_epd import epd2in13_V2
 

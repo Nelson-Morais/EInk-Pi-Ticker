@@ -1,13 +1,21 @@
 import pigpio
 import spidev
 
+# Define pins at module level
+RST_PIN = 17
+DC_PIN = 25
+BL_PIN = 24
+CS_PIN = 8
+BUSY_PIN = 24
+
 class RaspberryPi:
     def __init__(self):
-        self.RST_PIN = 17
-        self.DC_PIN = 25
-        self.BL_PIN = 24
-        self.CS_PIN = 8
-        self.BUSY_PIN = 24
+        # Use module level pins
+        self.RST_PIN = RST_PIN
+        self.DC_PIN = DC_PIN
+        self.BL_PIN = BL_PIN
+        self.CS_PIN = CS_PIN
+        self.BUSY_PIN = BUSY_PIN
 
         # Initialize pigpio
         self.pi = pigpio.pi()
