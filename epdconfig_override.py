@@ -50,13 +50,13 @@ class RaspberryPi:
     def spi_writebyte(self, data):
         logger.debug(f"SPI write: {data if isinstance(data, int) else [hex(b) for b in data]}")
         try:
-            if isinstance(data, list):
+            if isinstance(data, (list, bytearray)):
                 for byte in data:
-                    count, data = self.pi.spi_xfer(self.SPI, [byte])
-                    logger.debug(f"SPI write result: count={count}, data={[hex(b) for b in data]}")
+                    count, _ = self.pi.spi_xfer(self.SPI, [byte])
+                    logger.debug(f"SPI write result: count={count}")
             else:
-                count, data = self.pi.spi_xfer(self.SPI, [data])
-                logger.debug(f"SPI write result: count={count}, data={[hex(b) for b in data]}")
+                count, _ = self.pi.spi_xfer(self.SPI, [data])
+                logger.debug(f"SPI write result: count={count}")
         except Exception as e:
             logger.error(f"SPI write failed: {str(e)}")
             raise
@@ -64,13 +64,14 @@ class RaspberryPi:
     def spi_writebyte2(self, data):
         logger.debug(f"SPI write2: {data if isinstance(data, int) else [hex(b) for b in data]}")
         try:
-            if isinstance(data, list):
-                for byte in data:
-                    count, data = self.pi.spi_xfer(self.SPI, [byte])
-                    logger.debug(f"SPI write2 result: count={count}, data={[hex(b) for b in data]}")
+            if isinstance(data, (list, bytearray)):
+                # Convert bytearray to list of integers for spi_xfer
+                data_list = [int(b) for b in data]
+                count, _ = self.pi.spi_xfer(self.SPI, data_list)
+                logger.debug(f"SPI write2 result: count={count}")
             else:
-                count, data = self.pi.spi_xfer(self.SPI, [data])
-                logger.debug(f"SPI write2 result: count={count}, data={[hex(b) for b in data]}")
+                count, _ = self.pi.spi_xfer(self.SPI, [data])
+                logger.debug(f"SPI write2 result: count={count}")
         except Exception as e:
             logger.error(f"SPI write2 failed: {str(e)}")
             raise
