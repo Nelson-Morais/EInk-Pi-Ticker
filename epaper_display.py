@@ -27,7 +27,6 @@ class EPaperDisplay:
     def __init__(self):
         # Initialize the display
         self.epd = epd2in13_V2.EPD()
-        self.init_display()
         
         # The display dimensions (using natural orientation like example)
         self.width = self.epd.height  # Match example code orientation
@@ -47,6 +46,9 @@ class EPaperDisplay:
             self.price_font = ImageFont.load_default()
             self.symbol_font = ImageFont.load_default()
 
+        # Initialize the display after setting up image and draw objects
+        self.init_display()
+        
     def init_display(self):
         """Initialize the e-Paper display with proper error handling"""
         try:
