@@ -1,5 +1,7 @@
 import pigpio
-import spidev
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Define pins at module level
 RST_PIN = 17
@@ -28,10 +30,8 @@ class RaspberryPi:
         self.pi.set_mode(self.CS_PIN, pigpio.OUTPUT)
         self.pi.set_mode(self.BUSY_PIN, pigpio.INPUT)
 
-        # Setup SPI
-        self.SPI = spidev.SpiDev(0, 0)
-        self.SPI.max_speed_hz = 4000000
-        self.SPI.mode = 0b00
+        # Initialize SPI
+        self.SPI = self.pi.spi_open(0, 0, baud=4000000, flags=0)
 
     def digital_write(self, pin, value):
         self.pi.write(pin, value)
@@ -43,17 +43,37 @@ class RaspberryPi:
         self.pi.time_sleep(delaytime / 1000.0)
 
     def spi_writebyte(self, data):
-        self.SPI.writebytes([data])
-
-    def spi_writebyte2(self, data):
-        self.SPI.writebytes2(data)
+        if isinstance(data, list):
+            for byte in data:
+                count, data = self.pi.spi_xfer(self.SPI, [byte])
+        else:
+            count, data = self.pi.spi_xfer(self.SPI, [data])
 
     def module_init(self):
         return 0
 
     def module_exit(self):
-        self.SPI.close()
+        self.pi.spi_close(self.SPI)
         self.pi.stop()
 
 # Create the implementation instance
 implementation = RaspberryPi()
+
+# Expose module-level functions that the Waveshare library expects
+def digital_write(pin, value):
+    implementation.digital_write(pin, value)
+
+def digital_read(pin):
+    return implementation.digital_read(pin)
+
+def delay_ms(delaytime):
+    implementation.delay_ms(delaytime)
+
+def spi_writebyte(data):
+    implementation.spi_writebyte(data)
+
+def module_init():
+    return implementation.module_init()
+
+def module_exit():
+    implementation.module_exit()
