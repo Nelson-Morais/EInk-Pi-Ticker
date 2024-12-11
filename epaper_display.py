@@ -6,11 +6,13 @@ import io
 import sys
 import os
 
-# Add the current directory to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-# Import our custom config before importing the Waveshare library
+# Override the epdconfig implementation before importing waveshare_epd
 import epdconfig_override
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "venv/lib/python3.11/site-packages/waveshare_epd"))
+sys.modules['waveshare_epd.epdconfig'] = epdconfig_override
+
 from waveshare_epd import epd2in13_V2
 
 logging.basicConfig(level=logging.INFO)
