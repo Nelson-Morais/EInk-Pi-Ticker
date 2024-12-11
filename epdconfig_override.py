@@ -49,19 +49,31 @@ class RaspberryPi:
 
     def spi_writebyte(self, data):
         logger.debug(f"SPI write: {data if isinstance(data, int) else [hex(b) for b in data]}")
-        if isinstance(data, list):
-            for byte in data:
-                count, data = self.pi.spi_xfer(self.SPI, [byte])
-        else:
-            count, data = self.pi.spi_xfer(self.SPI, [data])
+        try:
+            if isinstance(data, list):
+                for byte in data:
+                    count, data = self.pi.spi_xfer(self.SPI, [byte])
+                    logger.debug(f"SPI write result: count={count}, data={[hex(b) for b in data]}")
+            else:
+                count, data = self.pi.spi_xfer(self.SPI, [data])
+                logger.debug(f"SPI write result: count={count}, data={[hex(b) for b in data]}")
+        except Exception as e:
+            logger.error(f"SPI write failed: {str(e)}")
+            raise
 
     def spi_writebyte2(self, data):
         logger.debug(f"SPI write2: {data if isinstance(data, int) else [hex(b) for b in data]}")
-        if isinstance(data, list):
-            for byte in data:
-                count, data = self.pi.spi_xfer(self.SPI, [byte])
-        else:
-            count, data = self.pi.spi_xfer(self.SPI, [data])
+        try:
+            if isinstance(data, list):
+                for byte in data:
+                    count, data = self.pi.spi_xfer(self.SPI, [byte])
+                    logger.debug(f"SPI write2 result: count={count}, data={[hex(b) for b in data]}")
+            else:
+                count, data = self.pi.spi_xfer(self.SPI, [data])
+                logger.debug(f"SPI write2 result: count={count}, data={[hex(b) for b in data]}")
+        except Exception as e:
+            logger.error(f"SPI write2 failed: {str(e)}")
+            raise
 
     def module_init(self):
         logger.info("Module initialized")
