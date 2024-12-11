@@ -14,7 +14,7 @@ import os
 # Override the waveshare_epd.epdconfig module with our implementation
 sys.modules['waveshare_epd.epdconfig'] = sys.modules['epdconfig_override']
 
-from waveshare_epd import epd2in13_V2
+from waveshare_epd import epd2in13_V4
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ class EPaperDisplay:
     """
     def __init__(self):
         # Initialize the display
-        self.epd = epd2in13_V2.EPD()
+        self.epd = epd2in13_V4.EPD()
         
         # The display dimensions (using natural orientation like example)
         self.width = self.epd.height  # Match example code orientation
@@ -53,7 +53,7 @@ class EPaperDisplay:
         """Initialize the e-Paper display with proper error handling"""
         try:
             logger.info("Starting display initialization...")
-            self.epd.init(self.epd.FULL_UPDATE)
+            self.epd.init()  # V4 doesn't use FULL_UPDATE parameter
             logger.info("Display init complete, clearing display...")
             self.clear_display()  # Start with a clean display
             
@@ -113,65 +113,53 @@ class EPaperDisplay:
 
     def _create_graph(self, data):
         """Create a price history graph"""
-        # Set up the plot
-        fig, ax = plt.subplots(figsize=(2.5, 0.6), dpi=100)
-        fig.patch.set_alpha(0)
-        ax.patch.set_alpha(0)
-
-        # Plot the line
-        ax.plot(data.index, data['Close'], color='black', linewidth=1)
-        ax.axis('off')
-
-        # Convert to image
+        # Create a new figure with the correct size for the display
+        graph_height = self.height - 60  # Leave space for text above
+        dpi = 100
+        fig_width = self.width / dpi
+        fig_height = graph_height / dpi
+        
+        plt.figure(figsize=(fig_width, fig_height), dpi=dpi)
+        plt.plot(data, color='black', linewidth=1)
+        plt.axis('off')  # Hide axes
+        
+        # Set margins to 0 to use full space
+        plt.margins(0)
+        plt.tight_layout(pad=0)
+        
+        # Convert plot to PIL Image
         buf = io.BytesIO()
-        plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+        plt.savefig(buf, format='png', dpi=dpi, bbox_inches='tight', pad_inches=0)
         plt.close()
         buf.seek(0)
+        graph_image = Image.open(buf).convert('L')  # Convert to grayscale
         
-        # Convert to binary image
-        graph = Image.open(buf).convert('L')
-        graph = graph.point(lambda x: 0 if x < 128 else 255, '1')
+        # Resize to fit the display
+        graph_image = graph_image.resize((self.width, graph_height))
         
-        return graph
+        # Convert to black and white (1-bit)
+        graph_image = graph_image.point(lambda x: 0 if x < 128 else 255, '1')
+        
+        return graph_image
 
-    def display(self):
-        """Update the physical display with current image buffer"""
+    def update_display(self):
+        """Update the display with the current image buffer"""
         try:
-            buffer = self.epd.getbuffer(self.image)
-            logger.info(f"Display buffer size: {len(buffer)} bytes")
-            self.epd.display(buffer)
-            time.sleep(2)  # Add delay after display
+            logger.info(f"Display buffer size: {len(self.epd.getbuffer(self.image))} bytes")
+            self.epd.init()  # V4 doesn't use FULL_UPDATE parameter
+            self.epd.display(self.epd.getbuffer(self.image))
+            time.sleep(2)  # Give the display time to update
             logger.info("Display updated successfully")
         except Exception as e:
             logger.error(f"Failed to update display: {str(e)}")
             raise
 
-    def partial_update(self):
-        """Perform a partial update of the display"""
-        try:
-            buffer = self.epd.getbuffer(self.image)
-            logger.info(f"Partial update buffer size: {len(buffer)} bytes")
-            self.epd.displayPartial(buffer)
-            time.sleep(0.5)  # Add shorter delay for partial updates
-            logger.info("Partial display update completed")
-        except Exception as e:
-            logger.error(f"Failed to perform partial update: {str(e)}")
-            raise
-
     def sleep(self):
-        """Put the display into sleep mode"""
+        """Put the display to sleep"""
         try:
+            self.epd.init()  # V4 doesn't use FULL_UPDATE parameter
             self.epd.sleep()
             logger.info("Display entered sleep mode")
         except Exception as e:
             logger.error(f"Failed to put display to sleep: {str(e)}")
-            raise
-
-    def wake(self):
-        """Wake the display from sleep mode"""
-        try:
-            self.epd.init(self.epd.FULL_UPDATE)
-            logger.info("Display woken from sleep")
-        except Exception as e:
-            logger.error(f"Failed to wake display: {str(e)}")
             raise
