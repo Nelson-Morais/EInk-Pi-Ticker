@@ -50,6 +50,13 @@ class RaspberryPi:
         else:
             count, data = self.pi.spi_xfer(self.SPI, [data])
 
+    def spi_writebyte2(self, data):
+        if isinstance(data, list):
+            for byte in data:
+                count, _ = self.pi.spi_xfer(self.SPI, [byte])
+        else:
+            count, _ = self.pi.spi_xfer(self.SPI, [data])
+
     def module_init(self):
         return 0
 
@@ -72,6 +79,9 @@ def delay_ms(delaytime):
 
 def spi_writebyte(data):
     implementation.spi_writebyte(data)
+
+def spi_writebyte2(data):
+    implementation.spi_writebyte2(data)
 
 def module_init():
     return implementation.module_init()
