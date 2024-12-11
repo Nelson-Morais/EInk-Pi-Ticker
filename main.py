@@ -57,7 +57,7 @@ class StockDisplay:
             
             # Create layout and update display
             self.display.create_stock_layout(current_symbol, stats, self.current_graph_data)
-            self.display.display()  # Use new display update method
+            self.display.update_display()  # Use new display update method
             
             logger.info(f"Updated display with {current_symbol} price: {stats.current_price}")
         except Exception as e:

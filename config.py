@@ -11,7 +11,7 @@ CACHE_DURATION = 60  # Cache API responses for 60 seconds
 
 # API endpoints
 API_HOST = "0.0.0.0"
-API_PORT = 8000
+API_PORT = 8080
 
 # Display orientation
 ROTATE_DISPLAY = 0  # 0, 90, 180, or 270 degrees
